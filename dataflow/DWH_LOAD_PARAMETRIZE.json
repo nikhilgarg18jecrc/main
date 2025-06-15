@@ -1,0 +1,46 @@
+{
+	"name": "DWH_LOAD_PARAMETRIZE",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SRC_PSA_TBL",
+						"type": "DatasetReference"
+					},
+					"name": "PSATable"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          PRIMARY_KEY as string,",
+				"          SERIAL_KEY as integer,",
+				"          BRAND_CD as string,",
+				"          OPT_LEVEL as string,",
+				"          EVENT_DT as date,",
+				"          FIRST_NAME as string,",
+				"          LAST_NAME as string,",
+				"          FULL_NAME as string,",
+				"          EMAIL as string,",
+				"          ADDRESS as string,",
+				"          CITY as string,",
+				"          STATE as string,",
+				"          ZIPCODE as string,",
+				"          PHONE as integer,",
+				"          CREATED_DT as timestamp,",
+				"          CREATED_BY as string,",
+				"          LAST_MODIFIED_DT as timestamp,",
+				"          LAST_MODIFIED_BY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA;',",
+				"     format: 'query') ~> PSATable"
+			]
+		}
+	}
+}
