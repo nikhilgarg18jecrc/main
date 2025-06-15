@@ -571,6 +571,312 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Incremental_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "LAST_RUN_TIME",
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Incremental_Load",
+								"type": "DataFlowReference",
+								"parameters": {
+									"LAST_RUN_TIME": {
+										"value": "'@{variables('LAST_RUN_TIME')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Coarse"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"LAST_RUN_TIME": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Incremental_Load')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Incremental_Load')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable4",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable5",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     LAST_RUN_TIME as string",
+						"}",
+						"source(output(",
+						"          PRIMARY_KEY as string,",
+						"          SERIAL_KEY as integer,",
+						"          BRAND_CD as string,",
+						"          OPT_LEVEL as string,",
+						"          EVENT_DT as date,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          FULL_NAME as string,",
+						"          EMAIL as string,",
+						"          ADDRESS as string,",
+						"          CITY as string,",
+						"          STATE as string,",
+						"          ZIPCODE as string,",
+						"          PHONE as integer,",
+						"          CREATED_DT as timestamp,",
+						"          CREATED_BY as string,",
+						"          LAST_MODIFIED_DT as timestamp,",
+						"          LAST_MODIFIED_BY as string",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source1",
+						"source1 filter(LAST_MODIFIED_DT > toTimestamp($LAST_RUN_TIME,'yyyy-MM-dd HH:mm:ss')) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          PRIMARY_KEY,",
+						"          SERIAL_KEY,",
+						"          BRAND_CD,",
+						"          OPT_LEVEL,",
+						"          EVENT_DT,",
+						"          FIRST_NAME,",
+						"          LAST_NAME,",
+						"          FULL_NAME,",
+						"          EMAIL,",
+						"          ADDRESS,",
+						"          CITY,",
+						"          STATE,",
+						"          ZIPCODE,",
+						"          PHONE,",
+						"          CREATED_DT,",
+						"          CREATED_BY,",
+						"          LAST_MODIFIED_DT,",
+						"          LAST_MODIFIED_BY",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable4')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable5')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DB_NM": "ng_db_dev"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "PRIMARY_KEY",
+						"type": "varchar"
+					},
+					{
+						"name": "SERIAL_KEY",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "BRAND_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "OPT_LEVEL",
+						"type": "varchar"
+					},
+					{
+						"name": "EVENT_DT",
+						"type": "date"
+					},
+					{
+						"name": "FIRST_NAME",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_NAME",
+						"type": "varchar"
+					},
+					{
+						"name": "FULL_NAME",
+						"type": "varchar"
+					},
+					{
+						"name": "EMAIL",
+						"type": "varchar"
+					},
+					{
+						"name": "ADDRESS",
+						"type": "varchar"
+					},
+					{
+						"name": "CITY",
+						"type": "varchar"
+					},
+					{
+						"name": "STATE",
+						"type": "varchar"
+					},
+					{
+						"name": "ZIPCODE",
+						"type": "varchar"
+					},
+					{
+						"name": "PHONE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CREATED_DT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_MODIFIED_DT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_MODIFIED_BY",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "PSA_PATIENT_DATA"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable5')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DB_NM": "ng_db_dev"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "DWH_PATIENT_DATA"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		}
 	]
 }
