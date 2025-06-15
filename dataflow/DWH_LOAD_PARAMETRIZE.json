@@ -46,7 +46,7 @@
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA where EVENT_DT<\\'2025-04-01\\';',",
+				"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA where EVENT_DT<\\'2025-04-01\\'',",
 				"     format: 'query') ~> PSATable",
 				"PSATable sink(allowSchemaDrift: false,",
 				"     validateSchema: false,",
