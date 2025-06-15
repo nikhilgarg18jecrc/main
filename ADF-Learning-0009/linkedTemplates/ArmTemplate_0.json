@@ -171,7 +171,18 @@
 					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"DB_NM": "ng_db_dev"
+						"DB_NM": {
+							"value": "@dataset().DB_NM",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"DB_NM": {
+						"type": "string"
+					},
+					"SRC_TBL_NM": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -258,7 +269,10 @@
 				],
 				"typeProperties": {
 					"schema": "SalesLT",
-					"table": "PSA_PATIENT_DATA"
+					"table": {
+						"value": "@dataset().SRC_TBL_NM",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": [
@@ -274,7 +288,18 @@
 					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"DB_NM": "ng_db_dev"
+						"DB_NM": {
+							"value": "@dataset().DB_NM",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"DB_NM": {
+						"type": "string"
+					},
+					"TGT_TBL_NM": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -344,7 +369,10 @@
 				],
 				"typeProperties": {
 					"schema": "SalesLT",
-					"table": "DWH_PATIENT_DATA"
+					"table": {
+						"value": "@dataset().TGT_TBL_NM",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": [
@@ -364,7 +392,7 @@
 								"referenceName": "AzureSqlTable2",
 								"type": "DatasetReference"
 							},
-							"name": "source1"
+							"name": "SRC"
 						}
 					],
 					"sinks": [
@@ -376,8 +404,15 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [],
+					"transformations": [
+						{
+							"name": "filter1"
+						}
+					],
 					"scriptLines": [
+						"parameters{",
+						"     EVENT_DT_FIL as string",
+						"}",
 						"source(output(",
 						"          PRIMARY_KEY as string,",
 						"          SERIAL_KEY as integer,",
@@ -401,9 +436,9 @@
 						"     allowSchemaDrift: false,",
 						"     validateSchema: false,",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA where EVENT_DT<\\'2025-04-01\\'',",
-						"     format: 'query') ~> source1",
-						"source1 sink(allowSchemaDrift: false,",
+						"     format: 'table') ~> SRC",
+						"SRC filter(EVENT_DT<toDate($EVENT_DT_FIL,'yyyy-MM-dd')) ~> filter1",
+						"filter1 sink(allowSchemaDrift: false,",
 						"     validateSchema: false,",
 						"     input(",
 						"          PRIMARY_KEY as string,",
@@ -460,7 +495,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "SRC_QUERY_READ",
+						"name": "PARAMETRIZED_PIPELINE",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -475,11 +510,35 @@
 							"dataflow": {
 								"referenceName": "DWH_LOAD_PARAMETRIZE",
 								"type": "DataFlowReference",
-								"parameters": {},
+								"parameters": {
+									"EVENT_DT_FIL": {
+										"value": "'@{pipeline().parameters.EVENT_DT_FIL_P}'",
+										"type": "Expression"
+									}
+								},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
+									"SRC": {
+										"DB_NM": {
+											"value": "@pipeline().parameters.DB_NM_P",
+											"type": "Expression"
+										},
+										"SRC_TBL_NM": {
+											"value": "@pipeline().parameters.SRC_TBL_NM_P",
+											"type": "Expression"
+										}
+									},
+									"sink1": {
+										"DB_NM": {
+											"value": "@pipeline().parameters.DB_NM_P",
+											"type": "Expression"
+										},
+										"TGT_TBL_NM": {
+											"value": "@pipeline().parameters.TGT_TBL_M_P",
+											"type": "Expression"
+										}
+									}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {},
 							"compute": {
@@ -492,6 +551,20 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"DB_NM_P": {
+						"type": "string"
+					},
+					"SRC_TBL_NM_P": {
+						"type": "string"
+					},
+					"TGT_TBL_M_P": {
+						"type": "string"
+					},
+					"EVENT_DT_FIL_P": {
+						"type": "string"
+					}
 				},
 				"annotations": []
 			},
