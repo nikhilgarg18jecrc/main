@@ -649,7 +649,14 @@
 							"name": "sink1"
 						}
 					],
-					"transformations": [],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						}
+					],
 					"scriptLines": [
 						"source(output(",
 						"          PRIMARY_KEY as string,",
@@ -676,7 +683,29 @@
 						"     isolationLevel: 'READ_UNCOMMITTED',",
 						"     query: 'SELECT * from  SalesLT.PSA_PATIENT_DATA  \\r\\nwhere last_modified_dt > (SELECT ISNULL(max(last_modified_dt),CAST(\\'1970-01-01 00:00:00\\' AS DATETIME2)) FROM SalesLT.DWH_PATIENT_DATA)',",
 						"     format: 'query') ~> source1",
-						"source1 sink(allowSchemaDrift: true,",
+						"select1 derive(CREATED_BY = 'DWH_LOAD',",
+						"          CREATED_DT = currentTimestamp()) ~> derivedColumn1",
+						"source1 select(mapColumn(",
+						"          PRIMARY_KEY,",
+						"          SERIAL_KEY,",
+						"          BRAND_CD,",
+						"          OPT_LEVEL,",
+						"          EVENT_DT,",
+						"          FIRST_NAME,",
+						"          LAST_NAME,",
+						"          FULL_NAME,",
+						"          EMAIL,",
+						"          ADDRESS,",
+						"          CITY,",
+						"          STATE,",
+						"          ZIPCODE,",
+						"          PHONE,",
+						"          LAST_MODIFIED_DT,",
+						"          LAST_MODIFIED_BY",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -701,10 +730,10 @@
 						"          STATE,",
 						"          ZIPCODE,",
 						"          PHONE,",
-						"          CREATED_DT,",
-						"          CREATED_BY,",
 						"          LAST_MODIFIED_DT,",
-						"          LAST_MODIFIED_BY",
+						"          LAST_MODIFIED_BY,",
+						"          CREATED_BY,",
+						"          CREATED_DT",
 						"     )) ~> sink1"
 					]
 				}
