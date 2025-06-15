@@ -81,7 +81,10 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DB_NM": "ng_db_dev"
+					}
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
