@@ -54,7 +54,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SRC",
-				"SRC filter(EVENT_DT<$EVENT_DT_FIL) ~> filter1",
+				"SRC filter(EVENT_DT<toDate($EVENT_DT_FIL,'yyyy-MM-dd')) ~> filter1",
 				"filter1 sink(allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     input(",
