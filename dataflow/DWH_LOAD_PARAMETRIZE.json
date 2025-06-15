@@ -12,7 +12,15 @@
 					"name": "PSATable"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "DWH"
+				}
+			],
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
@@ -39,7 +47,48 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA where EVENT_DT<\\'2025-04-01\\';',",
-				"     format: 'query') ~> PSATable"
+				"     format: 'query') ~> PSATable",
+				"PSATable sink(allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     input(",
+				"          PRIMARY_KEY as string,",
+				"          EVENT_DT as date,",
+				"          FULL_NAME as string,",
+				"          EMAIL as string,",
+				"          EMAIL_STATUS as string,",
+				"          ADDRESS as string,",
+				"          CITY as string,",
+				"          STATE as string,",
+				"          ZIPCODE as string,",
+				"          PHONE as integer,",
+				"          CREATED_DT as timestamp,",
+				"          CREATED_BY as string,",
+				"          LAST_MODIFIED_DT as timestamp,",
+				"          LAST_MODIFIED_BY as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          PRIMARY_KEY,",
+				"          EVENT_DT,",
+				"          FULL_NAME,",
+				"          EMAIL,",
+				"          ADDRESS,",
+				"          CITY,",
+				"          STATE,",
+				"          ZIPCODE,",
+				"          PHONE,",
+				"          CREATED_DT,",
+				"          CREATED_BY,",
+				"          LAST_MODIFIED_DT,",
+				"          LAST_MODIFIED_BY",
+				"     )) ~> DWH"
 			]
 		}
 	}
