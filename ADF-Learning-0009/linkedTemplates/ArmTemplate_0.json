@@ -673,7 +673,7 @@
 						"     validateSchema: false,",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
 						"     format: 'table') ~> source1",
-						"source1 filter(LAST_MODIFIED_DT > toTimestamp($LAST_RUN_TIME,'yyyy-MM-dd HH:mm:ss')) ~> filter1",
+						"source1 filter(LAST_MODIFIED_DT > toTimestamp($LAST_RUN_TIME,'yyyy-MM-dd\\'T\\' HH:mm:ss.SSSSSSS\\'Z\\'')) ~> filter1",
 						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
