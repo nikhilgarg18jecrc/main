@@ -21,15 +21,8 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [
-				{
-					"name": "filter1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
-				"parameters{",
-				"     LAST_RUN_TIME as string",
-				"}",
 				"source(output(",
 				"          PRIMARY_KEY as string,",
 				"          SERIAL_KEY as integer,",
@@ -53,9 +46,9 @@
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
-				"source1 filter(LAST_MODIFIED_DT > toTimestamp($LAST_RUN_TIME,'yyyy-MM-ddTHH:mm:ss.SSSSSSS\\'Z\\'')) ~> filter1",
-				"filter1 sink(allowSchemaDrift: true,",
+				"     query: 'SELECT * from  SalesLT.PSA_PATIENT_DATA  \\r\\nwhere last_modified_dt > (SELECT ISNULL(max(last_modified_dt),CAST(\\'1970-01-01 00:00:00\\' AS DATETIME2)) FROM SalesLT.DWH_PATIENT_DATA)',",
+				"     format: 'query') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
