@@ -6,19 +6,19 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "SRC_PSA_TBL",
+						"referenceName": "AzureSqlTable2",
 						"type": "DatasetReference"
 					},
-					"name": "PSATable"
+					"name": "source1"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "AzureSqlTable3",
 						"type": "DatasetReference"
 					},
-					"name": "DWH"
+					"name": "sink1"
 				}
 			],
 			"transformations": [],
@@ -47,8 +47,8 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA where EVENT_DT<\\'2025-04-01\\'',",
-				"     format: 'query') ~> PSATable",
-				"PSATable sink(allowSchemaDrift: false,",
+				"     format: 'query') ~> source1",
+				"source1 sink(allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     input(",
 				"          PRIMARY_KEY as string,",
@@ -89,7 +89,7 @@
 				"          CREATED_BY,",
 				"          LAST_MODIFIED_DT,",
 				"          LAST_MODIFIED_BY",
-				"     )) ~> DWH"
+				"     )) ~> sink1"
 			]
 		}
 	}

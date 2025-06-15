@@ -1,0 +1,98 @@
+{
+	"name": "AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DB_NM": "ng_db_dev"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PRIMARY_KEY",
+				"type": "varchar"
+			},
+			{
+				"name": "SERIAL_KEY",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BRAND_CD",
+				"type": "varchar"
+			},
+			{
+				"name": "OPT_LEVEL",
+				"type": "varchar"
+			},
+			{
+				"name": "EVENT_DT",
+				"type": "date"
+			},
+			{
+				"name": "FIRST_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "FULL_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "EMAIL",
+				"type": "varchar"
+			},
+			{
+				"name": "ADDRESS",
+				"type": "varchar"
+			},
+			{
+				"name": "CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "STATE",
+				"type": "varchar"
+			},
+			{
+				"name": "ZIPCODE",
+				"type": "varchar"
+			},
+			{
+				"name": "PHONE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CREATED_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CREATED_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_MODIFIED_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "LAST_MODIFIED_BY",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "SalesLT",
+			"table": "PSA_PATIENT_DATA"
+		}
+	}
+}

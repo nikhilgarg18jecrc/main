@@ -1,0 +1,81 @@
+{
+	"name": "AzureSqlTable3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DB_NM": "ng_db_dev"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PRIMARY_KEY",
+				"type": "varchar"
+			},
+			{
+				"name": "EVENT_DT",
+				"type": "date"
+			},
+			{
+				"name": "FULL_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "EMAIL",
+				"type": "varchar"
+			},
+			{
+				"name": "EMAIL_STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "ADDRESS",
+				"type": "varchar"
+			},
+			{
+				"name": "CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "STATE",
+				"type": "varchar"
+			},
+			{
+				"name": "ZIPCODE",
+				"type": "varchar"
+			},
+			{
+				"name": "PHONE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CREATED_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CREATED_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_MODIFIED_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "LAST_MODIFIED_BY",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "SalesLT",
+			"table": "DWH_PATIENT_DATA"
+		}
+	}
+}
