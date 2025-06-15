@@ -5,7 +5,18 @@
 			"referenceName": "AzureSqlDatabase1",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"DB_NM": "ng_db_dev"
+				"DB_NM": {
+					"value": "@dataset().DB_NM",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"DB_NM": {
+				"type": "string"
+			},
+			"SRC_TBL_NM": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -92,7 +103,10 @@
 		],
 		"typeProperties": {
 			"schema": "SalesLT",
-			"table": "PSA_PATIENT_DATA"
+			"table": {
+				"value": "@dataset().SRC_TBL_NM",
+				"type": "Expression"
+			}
 		}
 	}
 }

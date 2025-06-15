@@ -9,7 +9,7 @@
 						"referenceName": "AzureSqlTable2",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "SRC"
 				}
 			],
 			"sinks": [
@@ -21,8 +21,18 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
 			"scriptLines": [
+				"parameters{",
+				"     DB_NM as string,",
+				"     SRC_TBL_NM as string,",
+				"     TGT_TBL_NM as string,",
+				"     EVENT_DT_FIL as string",
+				"}",
 				"source(output(",
 				"          PRIMARY_KEY as string,",
 				"          SERIAL_KEY as integer,",
@@ -46,9 +56,9 @@
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT DISTINCT PRIMARY_KEY,SERIAL_KEY,BRAND_CD,OPT_LEVEL,EVENT_DT FROM SalesLT.PSA_PATIENT_DATA where EVENT_DT<\\'2025-04-01\\'',",
-				"     format: 'query') ~> source1",
-				"source1 sink(allowSchemaDrift: false,",
+				"     format: 'table') ~> SRC",
+				"SRC filter(EVENT_DT<$EVENT_DT_FIL) ~> filter1",
+				"filter1 sink(allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     input(",
 				"          PRIMARY_KEY as string,",
