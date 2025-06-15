@@ -27,6 +27,9 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     LAST_RUN_TIME as string",
+				"}",
 				"source(output(",
 				"          PRIMARY_KEY as string,",
 				"          SERIAL_KEY as integer,",
@@ -51,7 +54,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
-				"source1 filter(ERROR_FUNCTION('LAST_MODIFIED_DT > ')) ~> filter1",
+				"source1 filter(LAST_MODIFIED_DT > toTimestamp($LAST_RUN_TIME,'yyyy-MM-dd HH:mm:ss')) ~> filter1",
 				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
