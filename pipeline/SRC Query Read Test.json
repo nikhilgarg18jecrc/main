@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SRC_QUERY_READ",
+				"name": "PARAMETRIZED_PIPELINE",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +17,35 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DWH_LOAD_PARAMETRIZE",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"EVENT_DT_FIL": {
+								"value": "'@{pipeline().parameters.EVENT_DT_FIL_P}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"SRC": {
+								"DB_NM": {
+									"value": "@pipeline().parameters.DB_NM_P",
+									"type": "Expression"
+								},
+								"SRC_TBL_NM": {
+									"value": "@pipeline().parameters.SRC_TBL_NM_P",
+									"type": "Expression"
+								}
+							},
+							"sink1": {
+								"DB_NM": {
+									"value": "@pipeline().parameters.DB_NM_P",
+									"type": "Expression"
+								},
+								"TGT_TBL_NM": {
+									"value": "@pipeline().parameters.TGT_TBL_M_P",
+									"type": "Expression"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -27,6 +55,20 @@
 				}
 			}
 		],
+		"parameters": {
+			"DB_NM_P": {
+				"type": "string"
+			},
+			"SRC_TBL_NM_P": {
+				"type": "string"
+			},
+			"TGT_TBL_M_P": {
+				"type": "string"
+			},
+			"EVENT_DT_FIL_P": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
