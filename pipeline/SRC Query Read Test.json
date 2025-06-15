@@ -1,0 +1,74 @@
+{
+	"name": "SRC Query Read Test",
+	"properties": {
+		"activities": [
+			{
+				"name": "PARAMETRIZED_PIPELINE",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DWH_LOAD_PARAMETRIZE",
+						"type": "DataFlowReference",
+						"parameters": {
+							"EVENT_DT_FIL": {
+								"value": "'@{pipeline().parameters.EVENT_DT_FIL_P}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"SRC": {
+								"DB_NM": {
+									"value": "@pipeline().parameters.DB_NM_P",
+									"type": "Expression"
+								},
+								"SRC_TBL_NM": {
+									"value": "@pipeline().parameters.SRC_TBL_NM_P",
+									"type": "Expression"
+								}
+							},
+							"sink1": {
+								"DB_NM": {
+									"value": "@pipeline().parameters.DB_NM_P",
+									"type": "Expression"
+								},
+								"TGT_TBL_NM": {
+									"value": "@pipeline().parameters.TGT_TBL_M_P",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Coarse"
+				}
+			}
+		],
+		"parameters": {
+			"DB_NM_P": {
+				"type": "string"
+			},
+			"SRC_TBL_NM_P": {
+				"type": "string"
+			},
+			"TGT_TBL_M_P": {
+				"type": "string"
+			},
+			"EVENT_DT_FIL_P": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,103 @@
+{
+	"name": "DWH_LOAD_PARAMETRIZE",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "SRC"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable3",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     EVENT_DT_FIL as string",
+				"}",
+				"source(output(",
+				"          PRIMARY_KEY as string,",
+				"          SERIAL_KEY as integer,",
+				"          BRAND_CD as string,",
+				"          OPT_LEVEL as string,",
+				"          EVENT_DT as date,",
+				"          FIRST_NAME as string,",
+				"          LAST_NAME as string,",
+				"          FULL_NAME as string,",
+				"          EMAIL as string,",
+				"          ADDRESS as string,",
+				"          CITY as string,",
+				"          STATE as string,",
+				"          ZIPCODE as string,",
+				"          PHONE as integer,",
+				"          CREATED_DT as timestamp,",
+				"          CREATED_BY as string,",
+				"          LAST_MODIFIED_DT as timestamp,",
+				"          LAST_MODIFIED_BY as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRC",
+				"SRC filter(EVENT_DT<toDate($EVENT_DT_FIL,'yyyy-MM-dd')) ~> filter1",
+				"filter1 sink(allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     input(",
+				"          PRIMARY_KEY as string,",
+				"          EVENT_DT as date,",
+				"          FULL_NAME as string,",
+				"          EMAIL as string,",
+				"          EMAIL_STATUS as string,",
+				"          ADDRESS as string,",
+				"          CITY as string,",
+				"          STATE as string,",
+				"          ZIPCODE as string,",
+				"          PHONE as integer,",
+				"          CREATED_DT as timestamp,",
+				"          CREATED_BY as string,",
+				"          LAST_MODIFIED_DT as timestamp,",
+				"          LAST_MODIFIED_BY as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          PRIMARY_KEY,",
+				"          EVENT_DT,",
+				"          FULL_NAME,",
+				"          EMAIL,",
+				"          ADDRESS,",
+				"          CITY,",
+				"          STATE,",
+				"          ZIPCODE,",
+				"          PHONE,",
+				"          CREATED_DT,",
+				"          CREATED_BY,",
+				"          LAST_MODIFIED_DT,",
+				"          LAST_MODIFIED_BY",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
